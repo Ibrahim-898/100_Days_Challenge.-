@@ -17,3 +17,16 @@ error.txt
 
 # Windows system file
 Thumbs.db
+# Node modules
+node_modules/
+
+# Environment variables
+.env
+
+# Logs
+logs/
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
