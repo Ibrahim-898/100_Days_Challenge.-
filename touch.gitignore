@@ -1,0 +1,19 @@
+# Ignore C++ compiled binaries
+*.exe
+*.out
+*.o
+*.obj
+
+# Ignore CPH Judge temporary files
+input.txt
+output.txt
+error.txt
+
+# VS Code settings (optional)
+.vscode/
+
+# macOS system file
+.DS_Store
+
+# Windows system file
+Thumbs.db
