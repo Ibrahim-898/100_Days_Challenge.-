@@ -1,0 +1,47 @@
+# ===== Node.js =====
+# Node modules
+node_modules/
+
+# Logs
+logs
+*.log
+
+# Environment files
+.env
+
+# Build folders
+dist/
+build/
+
+# ===== C++ =====
+# Compiled object files and binaries
+*.out
+*.exe
+*.o
+*.obj
+*.a
+*.so
+
+# Build systems
+build/
+CMakeFiles/
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+
+# ===== CPH (Competitive Programming Helper) =====
+.cph/
+.cphconfig
+testcases.txt
+inputf.txt
+outputf.txt
+errorf.txt
+
+# ===== OS/System Files =====
+.DS_Store
+Thumbs.db
+
+# ===== Editor/IDE Files =====
+.vscode/
+.idea/
+*.swp
