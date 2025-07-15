@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const userSchema = require('./models/user');
+const postmodel = require('./models/post');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
@@ -36,7 +37,7 @@ app.post('/login',async (req,res)=>{
         }
         let token = jwt.sign({email},"shhhhh");
         res.cookie("token",token);
-         res.redirect("/profile");
+         res.redirect("/homepage");
      });
 
 })
@@ -59,7 +60,18 @@ app.post("/create", async (req,res)=>{
     });
 });
 });
-
+app.post('/post',isloggedIn,async (req,res)=>{
+      let user = await userSchema.findOne({email : req.user.email});
+     let {content} = req.body;
+      let post = await postmodel.create({
+        user: user._id,
+         content,
+        
+      });
+      user.posts.push(post._id);
+      await user.save();
+      res.redirect("/homepage");
+});
 app.get("/logout",(req,res)=>{
     res.cookie("token","");
     res.redirect("/login");
@@ -71,6 +83,7 @@ function isloggedIn(req,res,next){
     else{
        let data =  jwt.verify(req.cookies.token,"shhhhh");
         req.user = data;
+        
     }
     next();
 }
