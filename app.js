@@ -20,10 +20,10 @@ app.get("/",(req,res)=>{
 app.get('/login',(req,res)=>{
     res.render('login');
 })
-app.get('/profile',isloggedIn,async (req,res)=>{
+app.get('/homepage',isloggedIn,async (req,res)=>{
     let user = await userSchema.findOne({email : req.user.email});
-    console.log(user);
-    res.render("profile",{user});
+    await user.populate("posts");
+    res.render("homepage",{user});
 });
 app.post('/login',async (req,res)=>{
     let {email,password}= req.body;
@@ -40,9 +40,6 @@ app.post('/login',async (req,res)=>{
          res.redirect("/homepage");
      });
 
-})
-app.get('/homepage',(req,res)=>{
-    res.render('homepage');
 })
 
 app.post("/create", async (req,res)=>{
