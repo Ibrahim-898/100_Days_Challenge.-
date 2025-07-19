@@ -25,6 +25,28 @@ app.get('/homepage',isloggedIn,async (req,res)=>{
     await user.populate("posts");
     res.render("homepage",{user});
 });
+app.get("/like/:id",isloggedIn,async (req,res)=>{
+    let post = await postmodel.findOne({_id: req.params.id}).populate("user");
+    //console.log(req.user._id);
+    if(post.likes.indexOf(req.user._id)===-1){
+    post.likes.push(req.user._id);
+    }
+    else {
+        post.likes.splice(post.likes.indexOf(req.user._id),1);
+    }
+    
+    await post.save();
+    res.redirect("/homepage");
+});
+app.get("/edit/:id",isloggedIn, async (req,res)=>{
+    let post = await postmodel.findOne({_id : req.params.id}).populate("user");
+    res.render("edit",{post});
+})
+
+app.post("/update/:id",isloggedIn,async(req,res)=>{
+    let post = await postmodel.findOneAndUpdate({_id: req.params.id},{content : req.body.content });
+    res.redirect("/homepage");
+});
 app.post('/login',async (req,res)=>{
     let {email,password}= req.body;
     const user = await userSchema.findOne({email});
@@ -35,7 +57,7 @@ app.post('/login',async (req,res)=>{
         if(!result){
             return res.send("Wrong Email or Password");
         }
-        let token = jwt.sign({email},"shhhhh");
+        let token = jwt.sign({ email: user.email, id: user._id }, "shhhhh");
         res.cookie("token",token);
          res.redirect("/homepage");
      });
@@ -75,13 +97,14 @@ app.get("/logout",(req,res)=>{
 
 })
 
-function isloggedIn(req,res,next){
+async function isloggedIn(req,res,next){
     if(req.cookies.token ==="") res.redirect("/login");
-    else{
-       let data =  jwt.verify(req.cookies.token,"shhhhh");
-        req.user = data;
-        
-    }
-    next();
+   let data = jwt.verify(req.cookies.token, "shhhhh");
+    
+    let user = await userSchema.findOne({ email: data.email });
+        if (!user) return res.redirect("/login");
+        req.user = user; 
+        next();
+;
 }
 app.listen(4000);
